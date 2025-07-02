@@ -1,0 +1,6 @@
+@Cut_Roll_News.Api_HostAddress = http://localhost:5186
+
+GET {{Cut_Roll_News.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

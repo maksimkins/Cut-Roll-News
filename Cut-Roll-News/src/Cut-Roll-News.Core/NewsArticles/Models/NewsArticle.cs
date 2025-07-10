@@ -7,14 +7,14 @@ using Cut_Roll_News.Core.NewsReferences.Models;
 
 public class NewsArticle
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public required string AuthorId { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public required string Title { get; set; }
     public required string Content { get; set; }
     [DefaultValue(0)]
-    public int Likes { get; set; }
+    public int LikesCount { get; set; }
     [JsonIgnore]
     public ICollection<NewsReference>? NewsReferences { get; set; }
     [JsonIgnore]

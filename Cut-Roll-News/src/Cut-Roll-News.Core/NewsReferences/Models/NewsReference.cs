@@ -4,8 +4,8 @@ namespace Cut_Roll_News.Core.NewsReferences.Models;
 
 public class NewsReference
 {
-    public int Id { get; set; }
-    public required int NewsArticleId { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public required string NewsArticleId { get; set; }
     public required string ReferenceId { get; set; }
     public required string ReferenceUrl { get; set; }
     public required ReferenceType ReferenceType { get; set; } 

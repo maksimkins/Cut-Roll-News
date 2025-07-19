@@ -9,7 +9,7 @@ public interface INewsLikeRepository : ICreateAsync<NewsLike, string?>,
     IGetAsNoTrackingAsync<NewsLike?, string>
 {
     public Task<string?> DeleteByUserIdAndArticleId(string userId, string articleId);
-    public Task<IQueryable<NewsArticle>> GetLikedNewsByUserIdAsync(string userId);
+    public Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string userId);
     public Task<NewsLike?> GetByUserIdAndArticleId(string userId, string articleId);
     public Task<int> GetLikesCountByArticleIdAsync(string articleId);
     public Task<bool> IsArticleLikedByUserAsync(string userId, string articleId);

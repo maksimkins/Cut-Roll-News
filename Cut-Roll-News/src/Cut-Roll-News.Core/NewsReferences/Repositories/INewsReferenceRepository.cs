@@ -7,9 +7,10 @@ namespace Cut_Roll_News.Core.NewsReferences.Repositories;
 public interface INewsReferenceRepository : ICreateAsync<NewsReference, string?>,
     IDeleteByIdAsync<string, string?>,
     IGetAsNoTrackingAsync<NewsReference?, string>,
-    IUpdateAsync<NewsReference, string?>, IGetByIdAsync<string, NewsReference?>
+    IGetByIdAsync<NewsReference?, string>
 {
-    Task<IQueryable<NewsReference>> GetAllByArticleIdAsync(int articleId);
-    Task<int> GetCountByArticleIdAsync(int articleId);
-    Task<bool> IsReferenceExistsAsync(string referenceId, int articleId);
+    Task<IEnumerable<NewsReference>> GetAllByArticleIdAsync(string articleId);
+    Task<int> GetCountByArticleIdAsync(string articleId);
+    Task<bool> IsReferenceExistsAsync(string referenceId, string articleId);
+    Task<string?> DeleteByArticleIdAndReferenceIdAsync(string articleId, string referencedId);
 }

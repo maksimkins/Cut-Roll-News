@@ -17,7 +17,7 @@ public class NewsReferenceConfiguration : IEntityTypeConfiguration<NewsReference
             .IsRequired();
 
         builder.Property(n => n.ReferenceUrl)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(n => n.ReferenceType)
             .IsRequired()

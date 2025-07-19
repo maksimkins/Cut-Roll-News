@@ -11,7 +11,6 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80 
       POSTGRES_CONNECTION_STRING: "Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Database=${POSTGRES_DB};Pooling=true;"
-
       JWT_KEY: "${JWT_KEY}"
       JWT_LIFE_TIME_IN_MINUTES: "${JWT_LIFE_TIME_IN_MINUTES}"
       JWT_ISSUER: "${JWT_ISSUER}"
@@ -19,7 +18,6 @@ services:
       RABBIT_MQ_HOSTNAME: "${RABBIT_MQ_HOSTNAME}"
       RABBIT_MQ_USERNAME: "${RABBIT_MQ_USERNAME}"
       RABBIT_MQ_PASSWORD: "${RABBIT_MQ_PASSWORD}"
-      
 
     ports:
       - 5001:80

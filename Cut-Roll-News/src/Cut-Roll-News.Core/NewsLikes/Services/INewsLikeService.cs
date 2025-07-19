@@ -10,7 +10,7 @@ public interface INewsLikeService
     public Task<string> DeleteLikeByIdAsync(string likeId);
     public Task<string> DeleteLikeByUserIdAndArticleIdAsync(string userId, string articleId);
     public Task<NewsLike> GetLikeAsNoTrackingAsync(string likeId);
-    public Task<IQueryable<NewsArticle>> GetLikedNewsByUserIdAsync(string userId);
+    public Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string userId);
     public Task<NewsLike> GetLikeByUserIdAndArticleId(string userId, string articleId);
     public Task<int> GetLikesCountByArticleIdAsync(string articleId);
     public Task<bool> IsArticleLikedByUserAsync(string userId, string articleId);

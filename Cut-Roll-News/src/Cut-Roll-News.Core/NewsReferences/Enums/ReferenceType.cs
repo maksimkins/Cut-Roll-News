@@ -8,4 +8,5 @@ public enum ReferenceType
     production_company,
     keyword,
     country,
+    news,
 }

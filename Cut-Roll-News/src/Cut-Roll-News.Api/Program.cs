@@ -5,8 +5,16 @@ using Cut_Roll_News.Api.Common.Extensions.WebApplicationBuilder;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.SetupVariables();
-builder.Services.InitDbContext(builder.Configuration);
+builder.InitMessageBroker();
 
+builder.Services.InitDbContext(builder.Configuration);
+builder.Services.InitAuth(builder.Configuration);
+builder.Services.InitSwagger();
+builder.Services.InitCors();
+
+builder.Services.RegisterDependencyInjection();
+
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,11 +26,12 @@ app.UpdateDb();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.MapControllers();
 
-app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigins");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
 
 app.Run();

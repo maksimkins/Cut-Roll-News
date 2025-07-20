@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Cut_Roll_News.Api.Common.Extensions.Controllers;
-using Cut_Roll_News.Core.NewsLikes.Dtos;
 using Cut_Roll_News.Core.NewsLikes.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cut_Roll_News.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/news/{newsId}/likes")]
 public class NewsLikeController : ControllerBase
 {
     private readonly INewsLikeService _newsLikeService;
@@ -17,7 +16,7 @@ public class NewsLikeController : ControllerBase
         _newsLikeService = newsLikeService;
     }
 
-    [HttpPut("{newsId}")]
+    [HttpPost]
     [Authorize]
     public async Task<IActionResult> ToggleLikeNews(string newsId)
     {
@@ -27,11 +26,7 @@ public class NewsLikeController : ControllerBase
 
             var likeId = await _newsLikeService.IsArticleLikedByUserAsync(userId, newsId)
                 ? await _newsLikeService.DeleteLikeByUserIdAndArticleIdAsync(userId, newsId)
-                : await _newsLikeService.CreateLikeAsync(new NewsLikeCreateDto
-                {
-                    UserId = userId,
-                    ArticleId = newsId
-                });
+                : await _newsLikeService.CreateLikeAsync(userId, newsId);
 
             return Ok(likeId);
         }

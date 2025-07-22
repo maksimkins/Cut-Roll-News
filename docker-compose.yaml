@@ -24,7 +24,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - news-network
+      - microservices-network
     restart: always
 
   
@@ -40,7 +40,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"  
     networks:
-      - news-network
+      - microservices-network
     volumes:
       - news_db_volume:/var/lib/postgresql/data
     restart: always
@@ -49,6 +49,5 @@ volumes:
   news_db_volume:
 
 networks:
-  news-network:
-    driver: bridge
-
+  microservices-network:
+    external: true

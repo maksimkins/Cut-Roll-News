@@ -8,15 +8,11 @@ public class NewsLikeConfiguration : IEntityTypeConfiguration<NewsLike>
 {
     public void Configure(EntityTypeBuilder<NewsLike> builder)
     {
-        builder.HasKey(n => n.Id);
+        builder.HasKey(n => new { n.UserId, n.NewsArticleId });
 
-        builder.Property(n => n.UserId)
-            .IsRequired();
-
-        builder.Property(n => n.NewsArticleId)
-            .IsRequired();
-
-        builder.HasIndex(n => new { n.UserId, n.NewsArticleId })
-            .IsUnique();
+        builder.HasOne(nl => nl.NewsArticle)
+            .WithMany(na => na.NewsLikes)
+            .HasForeignKey(nl => nl.NewsArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

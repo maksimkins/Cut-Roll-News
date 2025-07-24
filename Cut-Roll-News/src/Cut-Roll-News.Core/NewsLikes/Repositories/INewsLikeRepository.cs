@@ -4,13 +4,11 @@ using Cut_Roll_News.Core.NewsLikes.Models;
 
 namespace Cut_Roll_News.Core.NewsLikes.Repositories;
 
-public interface INewsLikeRepository : ICreateAsync<NewsLike, string?>,
-    IDeleteByIdAsync<string, string?>,
-    IGetAsNoTrackingAsync<NewsLike?, string>
+public interface INewsLikeRepository : ICreateAsync<NewsLike, Guid?>
 {
-    public Task<string?> DeleteByUserIdAndArticleId(string userId, string articleId);
+    public Task<Guid?> DeleteByUserIdAndArticleId(string userId, Guid articleId);
     public Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string userId);
-    public Task<NewsLike?> GetByUserIdAndArticleId(string userId, string articleId);
-    public Task<int> GetLikesCountByArticleIdAsync(string articleId);
-    public Task<bool> IsArticleLikedByUserAsync(string userId, string articleId);
+    public Task<NewsLike?> GetByUserIdAndArticleId(string userId, Guid articleId);
+    public Task<int> GetLikesCountByArticleIdAsync(Guid articleId);
+    public Task<bool> IsArticleLikedByUserAsync(string userId, Guid articleId);
 }

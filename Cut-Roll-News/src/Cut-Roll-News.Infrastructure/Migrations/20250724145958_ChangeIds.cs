@@ -1,29 +1,29 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Cut_Roll_News.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class ChangeIds : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS \"pgcrypto\";");
+
             migrationBuilder.CreateTable(
                 name: "NewsArticles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     AuthorId = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
-                    Likes = table.Column<int>(type: "integer", nullable: false)
+                    LikesCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,14 +34,12 @@ namespace Cut_Roll_News.Infrastructure.Migrations
                 name: "NewsLikes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    NewsArticleId = table.Column<int>(type: "integer", nullable: false)
+                    NewsArticleId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NewsLikes", x => x.Id);
+                    table.PrimaryKey("PK_NewsLikes", x => new { x.UserId, x.NewsArticleId });
                     table.ForeignKey(
                         name: "FK_NewsLikes_NewsArticles_NewsArticleId",
                         column: x => x.NewsArticleId,
@@ -54,16 +52,14 @@ namespace Cut_Roll_News.Infrastructure.Migrations
                 name: "NewsReferences",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NewsArticleId = table.Column<int>(type: "integer", nullable: false),
-                    ReferenceId = table.Column<string>(type: "text", nullable: false),
-                    ReferenceUrl = table.Column<string>(type: "text", nullable: false),
+                    NewsArticleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReferencedId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReferencedUrl = table.Column<string>(type: "text", nullable: true),
                     ReferenceType = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NewsReferences", x => x.Id);
+                    table.PrimaryKey("PK_NewsReferences", x => new { x.NewsArticleId, x.ReferencedId });
                     table.ForeignKey(
                         name: "FK_NewsReferences_NewsArticles_NewsArticleId",
                         column: x => x.NewsArticleId,
@@ -76,23 +72,13 @@ namespace Cut_Roll_News.Infrastructure.Migrations
                 name: "IX_NewsLikes_NewsArticleId",
                 table: "NewsLikes",
                 column: "NewsArticleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NewsLikes_UserId_NewsArticleId",
-                table: "NewsLikes",
-                columns: new[] { "UserId", "NewsArticleId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NewsReferences_NewsArticleId_ReferenceId_ReferenceType",
-                table: "NewsReferences",
-                columns: new[] { "NewsArticleId", "ReferenceId", "ReferenceType" },
-                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("DROP EXTENSION IF EXISTS \"pgcrypto\";");
+            
             migrationBuilder.DropTable(
                 name: "NewsLikes");
 

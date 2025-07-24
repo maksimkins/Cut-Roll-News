@@ -8,22 +8,15 @@ public class NewsReferenceConfiguration : IEntityTypeConfiguration<NewsReference
 {
     public void Configure(EntityTypeBuilder<NewsReference> builder)
     {
-        builder.HasKey(n => n.Id);
-
-        builder.Property(n => n.NewsArticleId)
-            .IsRequired();
-
-        builder.Property(n => n.ReferenceId)
-            .IsRequired();
-
-        builder.Property(n => n.ReferenceUrl)
-            .IsRequired(false);
+        builder.HasKey(n => new { n.NewsArticleId, n.ReferencedId });
 
         builder.Property(n => n.ReferenceType)
             .IsRequired()
             .HasConversion<string>();
 
-        builder.HasIndex(n => new { n.NewsArticleId, n.ReferenceId, n.ReferenceType })
-            .IsUnique();
+        builder.HasOne(nr => nr.NewsArticle)
+            .WithMany(na => na.NewsReferences)
+            .HasForeignKey(nr => nr.NewsArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -8,6 +8,7 @@ using Cut_Roll_News.Infrastructure.Common.Services;
 using Cut_Roll_News.Infrastructure.NewsArticles.Repositories;
 using Cut_Roll_News.Infrastructure.NewsArticles.Services;
 using Cut_Roll_News.Infrastructure.NewsLikes.Repositories;
+using Cut_Roll_News.Infrastructure.NewsLikes.Services;
 using Cut_Roll_News.Infrastructure.NewsReferences.Repositories;
 
 namespace Cut_Roll_News.Api.Common.Extensions.ServiceCollection;
@@ -21,7 +22,7 @@ public static class RegisterDependencyInjectionMethod
         serviceCollection.AddTransient<INewsReferenceRepository, NewsReferenceEfCoreRepository>();
 
         serviceCollection.AddTransient<INewsArticleService, NewsArticleService>();
-        serviceCollection.AddTransient<INewsLikeService, INewsLikeService>();
+        serviceCollection.AddTransient<INewsLikeService, NewsLikeService>();
 
         serviceCollection.AddTransient<IMessageBrokerService, RabbitMqService>();
 

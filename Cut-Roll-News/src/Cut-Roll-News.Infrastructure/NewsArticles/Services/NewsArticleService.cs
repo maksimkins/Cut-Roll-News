@@ -19,7 +19,7 @@ public class NewsArticleService : INewsArticleService
         _referenceRepository = referenceRepository ?? throw new ArgumentNullException(nameof(referenceRepository));
     }
 
-    public async Task<string> CreateArticleAsync(NewsArticleCreateDto? createDto)
+    public async Task<Guid> CreateArticleAsync(NewsArticleCreateDto? createDto)
     {
         if (createDto == null)
             throw new ArgumentNullException(nameof(createDto));
@@ -42,11 +42,10 @@ public class NewsArticleService : INewsArticleService
             {
                 var newsReference = new NewsReference
                 {
-                    ReferenceUrl = reference.ReferenceUrl,
+                    ReferencedUrl = reference.ReferenceUrl,
                     ReferenceType = reference.ReferenceType,
                     NewsArticleId = createdId,
-                    ReferenceId = !string.IsNullOrEmpty(reference.ReferenceId) ? reference.ReferenceId
-                        : throw new ArgumentNullException(nameof(reference.ReferenceId)),
+                    ReferencedId = reference.ReferencedId ?? throw new ArgumentNullException(nameof(reference.ReferencedId)),
                 };
 
                 await _referenceRepository.CreateAsync(newsReference);
@@ -56,7 +55,7 @@ public class NewsArticleService : INewsArticleService
         return createdId;
     }
 
-    public async Task<string> CreateArticleReferences(string? articleId, IEnumerable<NewsReferenceCreateDto>? referencesToCreate)
+    public async Task<Guid> CreateArticleReferences(Guid? articleId, IEnumerable<NewsReferenceCreateDto>? referencesToCreate)
     {
         if (referencesToCreate is not null && referencesToCreate.Any())
         {
@@ -65,40 +64,43 @@ public class NewsArticleService : INewsArticleService
                 var newsReference = new NewsReference
                 {
                     ReferenceType = reference.ReferenceType,
-                    NewsArticleId = !string.IsNullOrEmpty(articleId) ? articleId : throw new ArgumentNullException(nameof(articleId)),
-                    ReferenceId = reference.ReferenceId ?? throw new ArgumentNullException(nameof(reference.ReferenceId)),
+                    NewsArticleId = articleId ?? throw new ArgumentNullException(nameof(reference.ReferencedId)),
+                    ReferencedId = reference.ReferencedId ?? throw new ArgumentNullException(nameof(reference.ReferencedId)),
                 };
 
                 _ = await _referenceRepository.CreateAsync(newsReference)
-                    ?? throw new InvalidOperationException($"Failed to create reference with id: {reference.ReferenceId}");
+                    ?? throw new InvalidOperationException($"Failed to create reference with id: {reference.ReferencedId}");
             }
         }
 
         return articleId ?? throw new ArgumentNullException(nameof(articleId));
     }
 
-    public async Task<string> DeleteArticleByIdAsync(string? articleId)
+    public async Task<Guid> DeleteArticleByIdAsync(Guid? articleId)
     {
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
-        return await _articleRepository.DeleteByIdAsync(articleId) ?? throw new InvalidOperationException($"Failed to delete article with id: {articleId}");
+        return await _articleRepository.DeleteByIdAsync(articleId.Value) ?? throw new InvalidOperationException($"Failed to delete article with id: {articleId}");
     }
 
-    public async Task<string> DeleteArticleReferences(string? articleId, IEnumerable<NewsReferenceDeleteDto>? referencesToDelete)
+    public async Task<Guid> DeleteArticleReferences(Guid? articleId, IEnumerable<NewsReferenceDeleteDto>? referencesToDelete)
     {
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
         if (referencesToDelete is not null && referencesToDelete.Any())
         {
             foreach (var reference in referencesToDelete)
             {
-                var exists = await _referenceRepository.IsReferenceExistsAsync(reference.ReferenceId, articleId);
+                if (reference.ReferencedId == null)
+                    throw new ArgumentNullException(nameof(reference.ReferencedId));
+
+                var exists = await _referenceRepository.IsReferenceExistsAsync(reference.ReferencedId.Value, articleId.Value);
                 if (exists)
                 {
-                    _ = await _referenceRepository.DeleteByArticleIdAndReferenceIdAsync(articleId, reference.ReferenceId)
-                        ?? throw new InvalidOperationException($"Failed to delete reference with id: {reference.ReferenceId} for article with id: {articleId}");
+                    _ = await _referenceRepository.DeleteByArticleIdAndReferenceIdAsync(articleId.Value, reference.ReferencedId.Value)
+                        ?? throw new InvalidOperationException($"Failed to delete reference with id: {reference.ReferencedId} for article with id: {articleId}");
                 }
             }
         }
@@ -106,12 +108,12 @@ public class NewsArticleService : INewsArticleService
         return articleId ?? throw new ArgumentNullException(nameof(articleId));
     }
 
-    public async Task<NewsArticle> GetArticleAsNoTrackingAsync(string? articleId)
+    public async Task<NewsArticle> GetArticleAsNoTrackingAsync(Guid? articleId)
     {
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
-        return await _articleRepository.GetAsNoTrackingAsync(articleId) ?? throw new InvalidOperationException($"Article not found with id: {articleId}");
+        return await _articleRepository.GetAsNoTrackingAsync(articleId.Value) ?? throw new InvalidOperationException($"Article not found with id: {articleId}");
     }
 
     public async Task<IEnumerable<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto)
@@ -143,7 +145,7 @@ public class NewsArticleService : INewsArticleService
                     a.NewsReferences != null &&
                     a.NewsReferences.Any(r =>
                         r.ReferenceType == localRef.ReferenceType &&
-                        r.ReferenceId == localRef.ReferenceId));
+                        r.ReferencedId == localRef.ReferencedId));
             }
         }
 
@@ -185,18 +187,18 @@ public class NewsArticleService : INewsArticleService
         return result;
     }
 
-    public async Task<string> UpdateAtricleContentAsync(string? newsId, NewsArticleUpdateContentDto? updateDto)
+    public async Task<Guid> UpdateAtricleContentAsync(Guid? newsId, NewsArticleUpdateContentDto? updateDto)
     {
         if (updateDto == null)
             throw new ArgumentNullException(nameof(updateDto));
 
-        if (string.IsNullOrEmpty(newsId))
+        if (newsId == null)
             throw new ArgumentNullException(nameof(newsId));
 
         if (string.IsNullOrEmpty(updateDto.NewContent) && string.IsNullOrEmpty(updateDto.NewTitle))
             throw new ArgumentException("At least one of NewContent or NewTitle must be provided.");
 
-        var foundArticle = await _articleRepository.GetAsNoTrackingAsync(newsId) ??
+        var foundArticle = await _articleRepository.GetAsNoTrackingAsync(newsId.Value) ??
             throw new InvalidOperationException($"Article not found with id: {newsId}");
 
         foundArticle.Content = updateDto.NewContent ?? foundArticle.Content;

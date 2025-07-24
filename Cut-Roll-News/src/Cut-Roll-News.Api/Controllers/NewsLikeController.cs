@@ -18,7 +18,7 @@ public class NewsLikeController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> ToggleLikeNews(string newsId)
+    public async Task<IActionResult> ToggleLikeNews(Guid newsId)
     {
         try
         {

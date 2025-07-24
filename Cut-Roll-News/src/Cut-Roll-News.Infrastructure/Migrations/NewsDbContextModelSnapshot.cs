@@ -24,8 +24,10 @@ namespace Cut_Roll_News.Infrastructure.Migrations
 
             modelBuilder.Entity("Cut_Roll_News.Core.NewsArticles.Models.NewsArticle", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("AuthorId")
                         .IsRequired()
@@ -56,72 +58,59 @@ namespace Cut_Roll_News.Infrastructure.Migrations
 
             modelBuilder.Entity("Cut_Roll_News.Core.NewsLikes.Models.NewsLike", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NewsArticleId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("NewsArticleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "NewsArticleId");
 
                     b.HasIndex("NewsArticleId");
-
-                    b.HasIndex("UserId", "NewsArticleId")
-                        .IsUnique();
 
                     b.ToTable("NewsLikes");
                 });
 
             modelBuilder.Entity("Cut_Roll_News.Core.NewsReferences.Models.NewsReference", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("NewsArticleId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("NewsArticleId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReferenceId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("ReferencedId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ReferenceType")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ReferenceUrl")
-                        .IsRequired()
+                    b.Property<string>("ReferencedUrl")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("NewsArticleId", "ReferenceId", "ReferenceType")
-                        .IsUnique();
+                    b.HasKey("NewsArticleId", "ReferencedId");
 
                     b.ToTable("NewsReferences");
                 });
 
             modelBuilder.Entity("Cut_Roll_News.Core.NewsLikes.Models.NewsLike", b =>
                 {
-                    b.HasOne("Cut_Roll_News.Core.NewsArticles.Models.NewsArticle", null)
+                    b.HasOne("Cut_Roll_News.Core.NewsArticles.Models.NewsArticle", "NewsArticle")
                         .WithMany("NewsLikes")
                         .HasForeignKey("NewsArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("NewsArticle");
                 });
 
             modelBuilder.Entity("Cut_Roll_News.Core.NewsReferences.Models.NewsReference", b =>
                 {
-                    b.HasOne("Cut_Roll_News.Core.NewsArticles.Models.NewsArticle", null)
+                    b.HasOne("Cut_Roll_News.Core.NewsArticles.Models.NewsArticle", "NewsArticle")
                         .WithMany("NewsReferences")
                         .HasForeignKey("NewsArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("NewsArticle");
                 });
 
             modelBuilder.Entity("Cut_Roll_News.Core.NewsArticles.Models.NewsArticle", b =>

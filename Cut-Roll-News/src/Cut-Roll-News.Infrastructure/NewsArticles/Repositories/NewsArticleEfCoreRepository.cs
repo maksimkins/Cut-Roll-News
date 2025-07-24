@@ -1,5 +1,3 @@
-
-
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsArticles.Repositories;
 using Cut_Roll_News.Infrastructure.Common.Data;
@@ -15,13 +13,14 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async Task<string?> CreateAsync(NewsArticle newsArticle)
+    public async Task<Guid?> CreateAsync(NewsArticle newsArticle)
     {
         await _dbContext.NewsArticles.AddAsync(newsArticle);
-        return await _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0 ? newsArticle.Id : null);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0 ? newsArticle.Id : null;
     }
 
-    public async Task<int> DecrementLikes(string articleId)
+    public async Task<int> DecrementLikes(Guid articleId)
     {
         var article = await _dbContext.NewsArticles.Where(a => a.Id == articleId).FirstOrDefaultAsync()
             ?? throw new ArgumentNullException(nameof(articleId), $"Article with id: {articleId} not found");
@@ -31,7 +30,7 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
         return article.LikesCount; 
     }
 
-    public async Task<string?> DeleteByIdAsync(string id)
+    public async Task<Guid?> DeleteByIdAsync(Guid id)
     {
         var newsArticle = _dbContext.NewsArticles.Find(id);
         if (newsArticle == null)
@@ -40,7 +39,9 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
         }
 
         _dbContext.NewsArticles.Remove(newsArticle);
-        return await _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0 ? id : null);
+
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0 ? newsArticle.Id : null;
     }
 
     public async Task<IQueryable<NewsArticle>> GetAllAsQueryableAsync()
@@ -51,12 +52,12 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
             .AsQueryable());
     }
 
-    public async Task<NewsArticle?> GetAsNoTrackingAsync(string id)
+    public async Task<NewsArticle?> GetAsNoTrackingAsync(Guid id)
     {
         return await _dbContext.NewsArticles.AsNoTracking().FirstOrDefaultAsync(na => na.Id == id);
     }
 
-    public async Task<int> IncrementLikes(string articleId)
+    public async Task<int> IncrementLikes(Guid articleId)
     {
         var article = await _dbContext.NewsArticles.Where(a => a.Id == articleId).FirstOrDefaultAsync()
             ?? throw new ArgumentNullException(nameof(articleId), $"Article with id: {articleId} not found");
@@ -66,9 +67,10 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
         return article.LikesCount; 
     }
 
-    public async Task<string?> UpdateAsync(NewsArticle entity)
+    public async Task<Guid?> UpdateAsync(NewsArticle entity)
     {
         _dbContext.NewsArticles.Update(entity);
-        return await _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0 ? entity.Id : null);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0 ? entity.Id : null;
     }
 }

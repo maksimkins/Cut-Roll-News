@@ -5,12 +5,10 @@ namespace Cut_Roll_News.Core.NewsLikes.Services;
 
 public interface INewsLikeService
 {
-    public Task<string> CreateLikeAsync(string? userId, string? articleId);
-    public Task<string> DeleteLikeByIdAsync(string? likeId);
-    public Task<string> DeleteLikeByUserIdAndArticleIdAsync(string? userId, string? articleId);
-    public Task<NewsLike> GetLikeAsNoTrackingAsync(string? likeId);
+    public Task<Guid> CreateLikeAsync(string? userId, Guid? articleId);
+    public Task<Guid> DeleteLikeByUserIdAndArticleIdAsync(string? userId, Guid? articleId);
     public Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string? userId);
-    public Task<NewsLike> GetLikeByUserIdAndArticleId(string? userId, string? articleId);
-    public Task<int> GetLikesCountByArticleIdAsync(string? articleId);
-    public Task<bool> IsArticleLikedByUserAsync(string? userId, string? articleId);
+    public Task<NewsLike> GetLikeByUserIdAndArticleId(string? userId, Guid? articleId);
+    public Task<int> GetLikesCountByArticleIdAsync(Guid? articleId);
+    public Task<bool> IsArticleLikedByUserAsync(string? userId, Guid? articleId);
 }

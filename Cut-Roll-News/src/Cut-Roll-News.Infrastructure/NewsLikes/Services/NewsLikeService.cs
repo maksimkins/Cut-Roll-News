@@ -8,64 +8,43 @@ namespace Cut_Roll_News.Infrastructure.NewsLikes.Services;
 public class NewsLikeService : INewsLikeService
 {
     private readonly INewsLikeRepository _newsLikeRepository;
-    //private readonly INewsArticleRepository _newsArticleRepository;
-    public NewsLikeService(INewsLikeRepository newsLikeRepository) // INewsArticleRepository newsArticleRepository
+    public NewsLikeService(INewsLikeRepository newsLikeRepository)
     {
         _newsLikeRepository = newsLikeRepository ?? throw new ArgumentNullException(nameof(newsLikeRepository));
-        //_newsArticleRepository = newsArticleRepository ?? throw new ArgumentNullException(nameof(newsArticleRepository));
     }
 
-    public async Task<string> CreateLikeAsync(string? userId, string? articleId)
+    public async Task<Guid> CreateLikeAsync(string? userId, Guid? articleId)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
         return await _newsLikeRepository.CreateAsync(new NewsLike
         {
             UserId = userId,
-            NewsArticleId = articleId
+            NewsArticleId = articleId.Value
         }) ?? throw new InvalidOperationException("Failed to create like.");
     }
 
-    public async Task<string> DeleteLikeByIdAsync(string? likeId)
-    {
-        if (string.IsNullOrEmpty(likeId))
-            throw new ArgumentNullException(nameof(likeId));
-
-        return await _newsLikeRepository.DeleteByIdAsync(likeId)
-            ?? throw new InvalidOperationException($"Failed to delete like with id: {likeId}");
-    }
-
-    public async Task<string> DeleteLikeByUserIdAndArticleIdAsync(string? userId, string? articleId)
+    public async Task<Guid> DeleteLikeByUserIdAndArticleIdAsync(string? userId, Guid? articleId)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
-        return await _newsLikeRepository.DeleteByUserIdAndArticleId(userId, articleId)
+        return await _newsLikeRepository.DeleteByUserIdAndArticleId(userId, articleId.Value)
                 ?? throw new InvalidOperationException($"Failed to delete like for user: {userId} and article: {articleId}");
     }
-
-    public async Task<NewsLike> GetLikeAsNoTrackingAsync(string? likeId)
-    {
-        if (string.IsNullOrEmpty(likeId))
-            throw new ArgumentNullException(nameof(likeId));
-
-        return await _newsLikeRepository.GetAsNoTrackingAsync(likeId)
-            ?? throw new InvalidOperationException($"Like not found with id: {likeId}");
-    }
-
-    public async Task<NewsLike> GetLikeByUserIdAndArticleId(string? userId, string? articleId)
+    public async Task<NewsLike> GetLikeByUserIdAndArticleId(string? userId, Guid? articleId)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
             
-        return await _newsLikeRepository.GetByUserIdAndArticleId(userId, articleId)
+        return await _newsLikeRepository.GetByUserIdAndArticleId(userId, articleId.Value)
             ?? throw new InvalidOperationException($"Like not found with articleId: {articleId} and userId: {userId}");
     }
 
@@ -77,21 +56,21 @@ public class NewsLikeService : INewsLikeService
         return await _newsLikeRepository.GetLikedNewsByUserIdAsync(userId);
     }
 
-    public async Task<int> GetLikesCountByArticleIdAsync(string? articleId)
+    public async Task<int> GetLikesCountByArticleIdAsync(Guid? articleId)
     {
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
         
-        return await _newsLikeRepository.GetLikesCountByArticleIdAsync(articleId);
+        return await _newsLikeRepository.GetLikesCountByArticleIdAsync(articleId.Value);
     }
 
-    public async Task<bool> IsArticleLikedByUserAsync(string? userId, string? articleId)
+    public async Task<bool> IsArticleLikedByUserAsync(string? userId, Guid? articleId)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));
-        if (string.IsNullOrEmpty(articleId))
+        if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
-        return await _newsLikeRepository.IsArticleLikedByUserAsync(userId, articleId);
+        return await _newsLikeRepository.IsArticleLikedByUserAsync(userId, articleId.Value);
     }
 }

@@ -14,60 +14,37 @@ public class NewsReferenceEfCoreRepository : INewsReferenceRepository
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
-    public async Task<string?> CreateAsync(NewsReference newsReference)
+    public async Task<Guid?> CreateAsync(NewsReference newsReference)
     {
         await _dbContext.NewsReferences.AddAsync(newsReference);
-        return await _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0 ? newsReference.Id : null);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0 ? newsReference.NewsArticleId : null;
     }
 
-    public async Task<string?> DeleteByArticleIdAndReferenceIdAsync(string articleId, string referencedId)
+    public async Task<Guid?> DeleteByArticleIdAndReferenceIdAsync(Guid articleId, Guid referencedId)
     {
-        var newsReference = await _dbContext.NewsReferences
-            .Where(nr => nr.NewsArticleId == articleId && nr.ReferenceId == referencedId)
-            .FirstOrDefaultAsync() ?? throw new ArgumentNullException(nameof(NewsReference),
-            $"News reference not found for the given articleId {articleId} and referencedId {referencedId}.");
+        await _dbContext.NewsReferences
+            .Where(nr => nr.NewsArticleId == articleId && nr.ReferencedId == referencedId)
+            .ExecuteDeleteAsync();
+        await _dbContext.SaveChangesAsync();
 
-        _dbContext.NewsReferences.Remove(newsReference);
-
-        return await _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0 ? newsReference.Id : null);
+        return articleId;
     }
 
-    public async Task<string?> DeleteByIdAsync(string id)
-    {
-        var newsReference = _dbContext.NewsReferences.Find(id);
-        if (newsReference == null)
-        {
-            throw new ArgumentNullException(nameof(newsReference), $"News reference not found, with id: {id}");
-        }
-
-        _dbContext.NewsReferences.Remove(newsReference);
-        return await _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0 ? id : null);
-    }
-
-    public async Task<IEnumerable<NewsReference>> GetAllByArticleIdAsync(string articleId)
+    public async Task<IEnumerable<NewsReference>> GetAllByArticleIdAsync(Guid articleId)
     {
         var query = _dbContext.NewsReferences.AsQueryable();
         
         return await query.Where(nr => nr.NewsArticleId == articleId).ToListAsync();
     }
 
-    public async Task<NewsReference?> GetAsNoTrackingAsync(string id)
-    {
-        return await _dbContext.NewsReferences.AsNoTracking().FirstOrDefaultAsync(nr => nr.Id == id);
-    }
-
-    public async Task<NewsReference?> GetByIdAsync(string id)
-    {
-        return await _dbContext.NewsReferences.FirstOrDefaultAsync(nr => nr.Id == id);
-    }
-
-    public async Task<int> GetCountByArticleIdAsync(string articleId)
+    public async Task<int> GetCountByArticleIdAsync(Guid articleId)
     {
         return await _dbContext.NewsReferences.CountAsync(nr => nr.NewsArticleId == articleId);
     }
 
-    public async Task<bool> IsReferenceExistsAsync(string referenceId, string articleId)
+    public async Task<bool> IsReferenceExistsAsync(Guid referencedId, Guid articleId)
     {
-        return await _dbContext.NewsReferences.AnyAsync(nr => nr.Id == referenceId && nr.NewsArticleId == articleId);
+        return await _dbContext.NewsReferences.AnyAsync(nr => nr.ReferencedId == referencedId && nr.NewsArticleId == articleId);
     }
 }

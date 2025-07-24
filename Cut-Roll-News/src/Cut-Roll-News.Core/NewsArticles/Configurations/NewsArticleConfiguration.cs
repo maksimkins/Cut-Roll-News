@@ -10,6 +10,9 @@ public class NewsArticleConfiguration : IEntityTypeConfiguration<NewsArticle>
     {
         builder.HasKey(n => n.Id);
 
+        builder.Property(e => e.Id)
+            .HasDefaultValueSql("gen_random_uuid()");
+
         builder.Property(n => n.AuthorId)
             .IsRequired();
 

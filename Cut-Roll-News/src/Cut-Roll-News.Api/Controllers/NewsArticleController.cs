@@ -36,7 +36,7 @@ public class NewsArticleController : ControllerBase
     }
 
     [HttpGet("{newsId}")]
-    public async Task<IActionResult> GetNewsArticle(string newsId)
+    public async Task<IActionResult> GetNewsArticle(Guid newsId)
     {
         try
         {
@@ -59,7 +59,7 @@ public class NewsArticleController : ControllerBase
 
     [HttpPut("{newsId}")]
     [Authorize(Roles = "Publisher, Admin")]
-    public async Task<IActionResult> UpdateNewsArticle(string newsId, [FromBody] NewsArticleUpdateContentDto newsArticleUpdateDto)
+    public async Task<IActionResult> UpdateNewsArticle(Guid newsId, [FromBody] NewsArticleUpdateContentDto newsArticleUpdateDto)
     {
         try
         {
@@ -78,7 +78,7 @@ public class NewsArticleController : ControllerBase
 
     [HttpDelete("{newsId}")]
     [Authorize(Roles = "Publisher, Admin")]
-    public async Task<IActionResult> DeleteNewsArticle(string newsId)
+    public async Task<IActionResult> DeleteNewsArticle(Guid newsId)
     {
         try
         {

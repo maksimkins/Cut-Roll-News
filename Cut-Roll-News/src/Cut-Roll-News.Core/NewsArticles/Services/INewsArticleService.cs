@@ -8,7 +8,7 @@ public interface INewsArticleService
 {
     public Task<Guid> CreateArticleAsync(NewsArticleCreateDto? createDto);
     public Task<Guid> DeleteArticleByIdAsync(Guid? articleId);
-    public Task<NewsArticle> GetArticleAsNoTrackingAsync(Guid? articleId);
+    public Task<NewsArticle?> GetArticleAsNoTrackingAsync(Guid? articleId);
     public Task<Guid> UpdateAtricleContentAsync(Guid? articleId, NewsArticleUpdateContentDto? updateDto);
     public Task<Guid> DeleteArticleReferences(Guid? articleId, IEnumerable<NewsReferenceDeleteDto>? referencesToDelete);
     public Task<Guid> CreateArticleReferences(Guid? articleId, IEnumerable<NewsReferenceCreateDto>? referencesToCreate);

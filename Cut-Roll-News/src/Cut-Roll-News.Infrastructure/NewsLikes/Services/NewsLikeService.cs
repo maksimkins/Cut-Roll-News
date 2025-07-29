@@ -37,15 +37,14 @@ public class NewsLikeService : INewsLikeService
         return await _newsLikeRepository.DeleteByUserIdAndArticleId(userId, articleId.Value)
                 ?? throw new InvalidOperationException($"Failed to delete like for user: {userId} and article: {articleId}");
     }
-    public async Task<NewsLike> GetLikeByUserIdAndArticleId(string? userId, Guid? articleId)
+    public async Task<NewsLike?> GetLikeByUserIdAndArticleId(string? userId, Guid? articleId)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));
         if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
             
-        return await _newsLikeRepository.GetByUserIdAndArticleId(userId, articleId.Value)
-            ?? throw new InvalidOperationException($"Like not found with articleId: {articleId} and userId: {userId}");
+        return await _newsLikeRepository.GetByUserIdAndArticleId(userId, articleId.Value);
     }
 
     public async Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string? userId)
@@ -71,6 +70,6 @@ public class NewsLikeService : INewsLikeService
         if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
-        return await _newsLikeRepository.IsArticleLikedByUserAsync(userId, articleId.Value);
+        return await _newsLikeRepository.ExistsAsync(userId, articleId.Value);
     }
 }

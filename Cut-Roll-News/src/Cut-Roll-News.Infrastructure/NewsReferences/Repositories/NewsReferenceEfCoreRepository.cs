@@ -18,6 +18,7 @@ public class NewsReferenceEfCoreRepository : INewsReferenceRepository
     {
         await _dbContext.NewsReferences.AddAsync(newsReference);
         var result = await _dbContext.SaveChangesAsync();
+        
         return result > 0 ? newsReference.NewsArticleId : null;
     }
 
@@ -26,9 +27,13 @@ public class NewsReferenceEfCoreRepository : INewsReferenceRepository
         await _dbContext.NewsReferences
             .Where(nr => nr.NewsArticleId == articleId && nr.ReferencedId == referencedId)
             .ExecuteDeleteAsync();
-        await _dbContext.SaveChangesAsync();
 
-        return articleId;
+        return await _dbContext.SaveChangesAsync() > 0 ? articleId : null;
+    }
+
+    public async Task<bool> ExistsAsync(Guid referencedId, Guid articleId)
+    {
+        return await _dbContext.NewsReferences.AnyAsync(nr => nr.ReferencedId == referencedId && nr.NewsArticleId == articleId);
     }
 
     public async Task<IEnumerable<NewsReference>> GetAllByArticleIdAsync(Guid articleId)
@@ -41,10 +46,5 @@ public class NewsReferenceEfCoreRepository : INewsReferenceRepository
     public async Task<int> GetCountByArticleIdAsync(Guid articleId)
     {
         return await _dbContext.NewsReferences.CountAsync(nr => nr.NewsArticleId == articleId);
-    }
-
-    public async Task<bool> IsReferenceExistsAsync(Guid referencedId, Guid articleId)
-    {
-        return await _dbContext.NewsReferences.AnyAsync(nr => nr.ReferencedId == referencedId && nr.NewsArticleId == articleId);
     }
 }

@@ -96,7 +96,7 @@ public class NewsArticleService : INewsArticleService
                 if (reference.ReferencedId == null)
                     throw new ArgumentNullException(nameof(reference.ReferencedId));
 
-                var exists = await _referenceRepository.IsReferenceExistsAsync(reference.ReferencedId.Value, articleId.Value);
+                var exists = await _referenceRepository.ExistsAsync(reference.ReferencedId.Value, articleId.Value);
                 if (exists)
                 {
                     _ = await _referenceRepository.DeleteByArticleIdAndReferenceIdAsync(articleId.Value, reference.ReferencedId.Value)
@@ -108,12 +108,12 @@ public class NewsArticleService : INewsArticleService
         return articleId ?? throw new ArgumentNullException(nameof(articleId));
     }
 
-    public async Task<NewsArticle> GetArticleAsNoTrackingAsync(Guid? articleId)
+    public async Task<NewsArticle?> GetArticleAsNoTrackingAsync(Guid? articleId)
     {
         if (articleId == null)
             throw new ArgumentNullException(nameof(articleId));
 
-        return await _articleRepository.GetAsNoTrackingAsync(articleId.Value) ?? throw new InvalidOperationException($"Article not found with id: {articleId}");
+        return await _articleRepository.GetAsNoTrackingAsync(articleId.Value);
     }
 
     public async Task<IEnumerable<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto)

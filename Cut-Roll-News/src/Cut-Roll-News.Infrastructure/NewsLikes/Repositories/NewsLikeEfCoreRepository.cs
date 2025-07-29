@@ -1,11 +1,10 @@
+namespace Cut_Roll_News.Infrastructure.NewsLikes.Repositories;
 
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsLikes.Models;
 using Cut_Roll_News.Core.NewsLikes.Repositories;
 using Cut_Roll_News.Infrastructure.Common.Data;
 using Microsoft.EntityFrameworkCore;
-
-namespace Cut_Roll_News.Infrastructure.NewsLikes.Repositories;
 
 public class NewsLikeEfCoreRepository : INewsLikeRepository
 {
@@ -33,9 +32,15 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
             throw new ArgumentNullException(nameof(newsLike), $"Like not found for user: {userId} and article: {articleId}");
         }
         _dbContext.NewsLikes.Remove(newsLike);
-        
+
         var result = await _dbContext.SaveChangesAsync();
         return result > 0 ? articleId : null;
+    }
+
+    public Task<bool> ExistsAsync(string userId, Guid articleId)
+    {
+        return _dbContext.NewsLikes
+            .AnyAsync(nl => nl.UserId == userId && nl.NewsArticleId == articleId);
     }
 
     public async Task<NewsLike?> GetByUserIdAndArticleId(string userId, Guid articleId)
@@ -48,10 +53,10 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
         var newsArticles = await _dbContext.NewsLikes
             .Where(nl => nl.UserId == userId)
             .Include(nl => nl.NewsArticle)
-            .Select(nl => nl.NewsArticle!) 
+            .Select(nl => nl.NewsArticle!)
             .AsNoTracking()
             .ToListAsync();
-        
+
         return newsArticles;
     }
 
@@ -59,11 +64,5 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
     {
         return _dbContext.NewsLikes
             .CountAsync(nl => nl.NewsArticleId == articleId);
-    }
-
-    public Task<bool> IsArticleLikedByUserAsync(string userId, Guid articleId)
-    {
-        return _dbContext.NewsLikes
-            .AnyAsync(nl => nl.UserId == userId && nl.NewsArticleId == articleId);
     }
 }

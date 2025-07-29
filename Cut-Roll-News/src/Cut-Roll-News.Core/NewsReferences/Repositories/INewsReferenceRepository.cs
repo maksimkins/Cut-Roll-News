@@ -8,6 +8,6 @@ public interface INewsReferenceRepository : ICreateAsync<NewsReference, Guid?>
 {
     Task<IEnumerable<NewsReference>> GetAllByArticleIdAsync(Guid articleId);
     Task<int> GetCountByArticleIdAsync(Guid articleId);
-    Task<bool> IsReferenceExistsAsync(Guid referencedId, Guid articleId);
+    Task<bool> ExistsAsync(Guid referencedId, Guid articleId);
     Task<Guid?> DeleteByArticleIdAndReferenceIdAsync(Guid articleId, Guid referencedId);
 }

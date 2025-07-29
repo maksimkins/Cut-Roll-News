@@ -96,7 +96,7 @@ public class NewsArticleController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetAllNewsArticles([FromBody] NewsArticlePaginationDto paginationDto)
+    public async Task<IActionResult> GetNewsArticles([FromBody] NewsArticlePaginationDto paginationDto)
     {
         try
         {

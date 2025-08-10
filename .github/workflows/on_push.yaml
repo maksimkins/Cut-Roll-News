@@ -18,10 +18,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore Dependencies
-        run: dotnet restore Cut-Roll-News\src\Cut-Roll-News.Api\Cut-Roll-News.Api.csproj
+        run: dotnet restore Cut-Roll-News/src/Cut-Roll-News.Api/Cut-Roll-News.Api.csproj
 
       - name: Build Project
-        run: dotnet build Cut-Roll-News\src\Cut-Roll-News.Api\Cut-Roll-News.Api.csproj --no-restore --configuration Release
+        run: dotnet build Cut-Roll-News/src/Cut-Roll-News.Api/Cut-Roll-News.Api.csproj --no-restore --configuration Release
 
   deploy:
     name: Build and Push Docker image

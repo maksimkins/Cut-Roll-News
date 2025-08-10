@@ -10,7 +10,7 @@ public static class InitSwaggerMethod
         {
             options.SwaggerDoc("v1", new OpenApiInfo()
             {
-                Title = "TasteTrail User Experience Service",
+                Title = "Cut-Roll-News Service",
                 Version = "v1",
             });
 

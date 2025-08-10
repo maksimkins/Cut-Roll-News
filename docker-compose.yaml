@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   cut-roll-news:
-    image: cut-roll-news
+    image: makedoniaz/cut-roll-news:latest
     build:
       context: .
       dockerfile: app.Dockerfile

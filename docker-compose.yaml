@@ -22,13 +22,13 @@ services:
     ports:
       - 5001:80
     depends_on:
-      - postgres
+      - postgres-news
     networks:
       - microservices-network
     restart: always
 
   
-  postgres:
+  postgres-news:
     image: postgres:latest
     container_name: news_db_container
     environment:
@@ -38,7 +38,7 @@ services:
     expose:
       - ${POSTGRES_PORT}
     ports:
-      - "5433:${POSTGRES_PORT}"
+      - "5432:${POSTGRES_PORT}"
     networks:
       - microservices-network
     volumes:

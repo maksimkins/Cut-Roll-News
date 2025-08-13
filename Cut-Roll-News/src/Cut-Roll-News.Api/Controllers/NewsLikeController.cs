@@ -16,7 +16,7 @@ public class NewsLikeController : ControllerBase
         _newsLikeService = newsLikeService;
     }
 
-    [HttpPost()]
+    [HttpPost]
     [Authorize]
     public async Task<IActionResult> ToggleLikeNews(Guid newsId)
     {
@@ -49,24 +49,6 @@ public class NewsLikeController : ControllerBase
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var likedNews = await _newsLikeService.GetLikedNewsByUserIdAsync(userId);
             return Ok(likedNews);
-        }
-        catch (ArgumentException ex)
-        {
-            return this.BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return this.InternalServerError(ex.Message);
-        }
-    }
-
-    [HttpGet("api/users/{userId}/liked-news")]
-    public async Task<IActionResult> GetLikedNews(string? userId)
-    { 
-        try
-        {
-            var newsArticles = await _newsLikeService.GetLikedNewsByUserIdAsync(userId);
-            return Ok(newsArticles);
         }
         catch (ArgumentException ex)
         {

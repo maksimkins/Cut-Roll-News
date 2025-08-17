@@ -24,7 +24,7 @@ services:
     depends_on:
       - postgres-news
     networks:
-      - microservices-network
+      - web
     restart: always
 
   
@@ -49,5 +49,5 @@ volumes:
   news_db_volume:
 
 networks:
-  microservices-network:
+  web:
     external: true

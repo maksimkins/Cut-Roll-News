@@ -5,7 +5,7 @@ using Cut_Roll_News.Core.NewsLikes.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/users/{userId}/liked-news")]
+[Route("users/{userId}/liked-news")]
 public class UserLikesController : ControllerBase
 {
     private readonly INewsLikeService _newsLikeService;

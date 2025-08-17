@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cut_Roll_News.Api.Controllers;
 
 [ApiController]
-[Route("api/news")]
+[Route("news")]
 public class NewsArticleController : ControllerBase
 {
     private readonly INewsArticleService _newsArticleService;

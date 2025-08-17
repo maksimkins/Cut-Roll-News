@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cut_Roll_News.Api.Controllers;
 
 [ApiController]
-[Route("api/news/{newsId}/likes")]
+[Route("news/{newsId}/likes")]
 public class NewsLikeController : ControllerBase
 {
     private readonly INewsLikeService _newsLikeService;

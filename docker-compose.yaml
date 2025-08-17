@@ -40,7 +40,7 @@ services:
     ports:
       - "5433:${POSTGRES_PORT}"
     networks:
-      - microservices-network
+      - web
     volumes:
       - news_db_volume:/var/lib/postgresql/data
     restart: always

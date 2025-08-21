@@ -5,6 +5,7 @@ using Cut_Roll_News.Core.NewsReferences.Dtos;
 public class NewsArticleFilterDto
 {
     public string? Query { get; set; }
+    public string? AuthorId { get; set; }
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public List<NewsReferenceSearchByDto>? ReferenceToSearch { get; set; }

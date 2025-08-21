@@ -26,6 +26,11 @@ public class NewsArticleConfiguration : IEntityTypeConfiguration<NewsArticle>
         builder.Property(n => n.Content)
             .IsRequired();
 
+        builder.HasOne(n => n.Author)
+            .WithMany(u => u.NewsArticles) 
+            .HasForeignKey(n => n.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasMany(n => n.NewsReferences)
             .WithOne()
             .HasForeignKey(r => r.NewsArticleId)

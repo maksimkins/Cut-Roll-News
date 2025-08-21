@@ -1,3 +1,4 @@
+using Cut_Roll_News.Core.Common.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsReferences.Dtos;
@@ -12,7 +13,7 @@ public interface INewsArticleService
     public Task<Guid> UpdateAtricleContentAsync(Guid? articleId, NewsArticleUpdateContentDto? updateDto);
     public Task<Guid> DeleteArticleReferences(Guid? articleId, IEnumerable<NewsReferenceDeleteDto>? referencesToDelete);
     public Task<Guid> CreateArticleReferences(Guid? articleId, IEnumerable<NewsReferenceCreateDto>? referencesToCreate);
-    public Task<IEnumerable<NewsArticle>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto);
-    public Task<IEnumerable<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto);
-    public Task<IEnumerable<NewsArticle>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto);
+    public Task<PagedResult<NewsArticle>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto);
+    public Task<PagedResult<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto);
+    public Task<PagedResult<NewsArticle>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto);
 }

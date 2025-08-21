@@ -1,7 +1,7 @@
 namespace Cut_Roll_News.Core.Genres.Repositories;
 
 using Cut_Roll_News.Core.Common.Dtos;
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 using Cut_Roll_News.Core.Genres.Dtos;
 using Cut_Roll_News.Core.Genres.Models;
 

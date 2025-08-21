@@ -1,6 +1,6 @@
 namespace Cut_Roll_News.Core.MovieVideos.Repositories;
 
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 using Cut_Roll_News.Core.MovieVideos.Dtos;
 using Cut_Roll_News.Core.MovieVideos.Models;
 

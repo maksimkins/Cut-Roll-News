@@ -2,7 +2,7 @@ namespace Cut_Roll_News.Core.Casts.Repositories;
 
 using Cut_Roll_News.Core.Casts.Dtos;
 using Cut_Roll_News.Core.Common.Dtos;
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 
 public interface ICastRepository : IUpdateAsync<CastUpdateDto, Guid?>, IDeleteByIdAsync<Guid, Guid?>,
     ICreateAsync<CastCreateDto, Guid?>, ISearchAsync<CastSearchDto, PagedResult<CastGetDto>>, IBulkCreateAsync<CastCreateDto, bool>,

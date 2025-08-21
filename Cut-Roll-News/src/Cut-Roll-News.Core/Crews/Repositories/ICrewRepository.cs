@@ -1,7 +1,7 @@
 namespace Cut_Roll_News.Core.Crews.Repositories;
 
 using Cut_Roll_News.Core.Common.Dtos;
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 using Cut_Roll_News.Core.Crews.Dtos;
 
 public interface ICrewRepository : IUpdateAsync<CrewUpdateDto, Guid?>, IDeleteByIdAsync<Guid, Guid?>,

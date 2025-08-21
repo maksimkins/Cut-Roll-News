@@ -1,5 +1,5 @@
 using Cut_Roll_News.Core.Common.Dtos;
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 using Cut_Roll_News.Core.Movies.Dtos;
 using Cut_Roll_News.Core.People.Dtos;
 using Cut_Roll_News.Core.People.Models;

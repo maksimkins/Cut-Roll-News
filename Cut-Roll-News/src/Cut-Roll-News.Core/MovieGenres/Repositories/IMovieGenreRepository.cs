@@ -1,7 +1,7 @@
 namespace Cut_Roll_News.Core.MovieGenres.Repositories;
 
 using Cut_Roll_News.Core.Common.Dtos;
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 using Cut_Roll_News.Core.Genres.Models;
 using Cut_Roll_News.Core.MovieGenres.Dtos;
 using Cut_Roll_News.Core.Movies.Dtos;

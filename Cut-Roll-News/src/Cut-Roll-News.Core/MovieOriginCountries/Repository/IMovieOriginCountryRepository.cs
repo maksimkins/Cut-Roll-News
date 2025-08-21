@@ -1,7 +1,7 @@
 namespace Cut_Roll_News.Core.MovieOriginCountries.Repository;
 
 using Cut_Roll_News.Core.Common.Dtos;
-using Cut_Roll_News.Core.Common.Repositories.Interfaces;
+using Cut_Roll_News.Core.Common.Repositories.Base;
 using Cut_Roll_News.Core.Countries.Models;
 using Cut_Roll_News.Core.MovieOriginCountries.Dtos;
 using Cut_Roll_News.Core.Movies.Dtos;

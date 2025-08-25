@@ -25,6 +25,8 @@ services:
 
     expose:
       - "80" 
+    volumes:
+      - ./Data/SqlScripts:/app/SqlScripts
     depends_on:
       - postgres-news
     networks:

@@ -12,7 +12,6 @@ public interface IUserService
     Task<string> DeleteUserByIdAsync(string? userId);
     Task<UserResponseDto?> GetUserByUsernameAsync(string? username);
     Task<UserResponseDto?> GetUserByEmailAsync(string? email);
-    Task<int> CountUsersByRoleAsync(string? roleId);
     Task<PagedResult<UserResponseDto>> SearchUsersAsync(UserSearchDto? dto);
     Task<bool> UserExistsByUsernameAsync(string? username);
     Task<bool> UserExistsByEmailAsync(string? email);

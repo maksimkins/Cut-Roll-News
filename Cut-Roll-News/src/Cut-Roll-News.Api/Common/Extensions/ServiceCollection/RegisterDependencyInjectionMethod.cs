@@ -1,3 +1,4 @@
+using Cut_Roll_News.Core.Blob.Managers;
 using Cut_Roll_News.Core.Common.Services;
 using Cut_Roll_News.Core.NewsArticles.Repositories;
 using Cut_Roll_News.Core.NewsArticles.Services;
@@ -5,11 +6,13 @@ using Cut_Roll_News.Core.NewsLikes.Repositories;
 using Cut_Roll_News.Core.NewsLikes.Services;
 using Cut_Roll_News.Core.NewsReferences.Repositories;
 using Cut_Roll_News.Infrastructure.Common.Services;
+using Cut_Roll_News.Infrastructure.NewsArticles.Managers;
 using Cut_Roll_News.Infrastructure.NewsArticles.Repositories;
 using Cut_Roll_News.Infrastructure.NewsArticles.Services;
 using Cut_Roll_News.Infrastructure.NewsLikes.Repositories;
 using Cut_Roll_News.Infrastructure.NewsLikes.Services;
 using Cut_Roll_News.Infrastructure.NewsReferences.Repositories;
+using Cut_Roll_News.Infrastructure.Users.BackgroundServices;
 
 namespace Cut_Roll_News.Api.Common.Extensions.ServiceCollection;
 
@@ -26,6 +29,8 @@ public static class RegisterDependencyInjectionMethod
 
         serviceCollection.AddTransient<IMessageBrokerService, RabbitMqService>();
 
-        //serviceCollection.AddHostedService<UserRabbitMqService>();
+        serviceCollection.AddTransient<BaseBlobImageManager<Guid>, NewsArticleImageManager>();
+
+        serviceCollection.AddHostedService<UserRabbitMqService>();
     } 
 }

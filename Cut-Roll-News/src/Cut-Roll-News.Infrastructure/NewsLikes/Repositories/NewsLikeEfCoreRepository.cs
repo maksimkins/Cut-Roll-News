@@ -15,9 +15,6 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
     }
     public async Task<Guid?> CreateAsync(NewsLike newsLike)
     {
-        if (_dbContext.NewsArticles.Any(n => n.Id == newsLike.NewsArticleId))
-            throw new ArgumentException(nameof(newsLike.NewsArticleId), "News article not found for the like.");
-
         await _dbContext.NewsLikes.AddAsync(newsLike);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0 ? newsLike.NewsArticleId : null;

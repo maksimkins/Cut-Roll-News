@@ -9,4 +9,5 @@ public interface INewsArticleRepository : ICreateAsync<NewsArticle, Guid?>, IDel
     public Task<IQueryable<NewsArticle>> GetAllAsQueryableAsync();
     public Task<int> IncrementLikes(Guid articleId);
     public Task<int> DecrementLikes(Guid articleId);
+    public Task<Guid> PatchPhotoAsync(Guid articleId, string LogoPath);
 }

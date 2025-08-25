@@ -13,6 +13,7 @@ builder.Services.InitSwagger();
 builder.Services.InitCors();
 
 builder.Services.RegisterDependencyInjection();
+builder.Services.RegisterConfigureBlobStorage(builder.Configuration);
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -21,7 +22,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UpdateDb();
+await app.UpdateDbContext();
 
 app.UseSwagger();
 app.UseSwaggerUI();

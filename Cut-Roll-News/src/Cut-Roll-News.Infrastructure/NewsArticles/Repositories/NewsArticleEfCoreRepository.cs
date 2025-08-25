@@ -54,7 +54,10 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
 
     public async Task<NewsArticle?> GetAsNoTrackingAsync(Guid id)
     {
-        return await _dbContext.NewsArticles.AsNoTracking().FirstOrDefaultAsync(na => na.Id == id);
+        return await _dbContext.NewsArticles
+            .Include(n => n.Author)
+            .Include(n => n.NewsReferences)
+            .FirstOrDefaultAsync(na => na.Id == id);
     }
 
     public async Task<int> IncrementLikes(Guid articleId)
@@ -65,6 +68,16 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
 
         await _dbContext.SaveChangesAsync();
         return article.LikesCount; 
+    }
+
+    public async Task<Guid> PatchPhotoAsync(Guid articleId, string photoPath)
+    {
+        var article = await _dbContext.NewsArticles.Where(a => a.Id == articleId).FirstOrDefaultAsync()
+            ?? throw new ArgumentNullException(nameof(articleId), $"Article with id: {articleId} not found");
+        article.PhotoPath = photoPath;
+
+        await _dbContext.SaveChangesAsync();
+        return article.Id;
     }
 
     public async Task<Guid?> UpdateAsync(NewsArticle entity)

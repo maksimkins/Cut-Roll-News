@@ -2,6 +2,7 @@
 
 namespace Cut_Roll_News.Api.Common.Extensions.ServiceCollection;
 
+using System.Security.Claims;
 using Cut_Roll_News.Core.Common.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +40,27 @@ public static class InitAuthMethod
                 };
             });
 
-        serviceCollection.AddAuthorization();
+        serviceCollection.AddAuthorization(options =>
+        {
+            options.AddPolicy("Essentials", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("EmailConfirmed", "True");
+                policy.RequireClaim(ClaimTypes.Email);
+                policy.RequireClaim(ClaimTypes.NameIdentifier);
+            });
+
+            options.AddPolicy("NotMuted", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("IsMuted", "False");
+            });
+            
+            options.AddPolicy("AdminOnly", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireRole("Admin"); 
+            });
+        });
     }
 }

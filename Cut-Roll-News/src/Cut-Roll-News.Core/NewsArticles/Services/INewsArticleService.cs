@@ -2,6 +2,7 @@ using Cut_Roll_News.Core.Common.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsReferences.Dtos;
+using Microsoft.AspNetCore.Http;
 
 namespace Cut_Roll_News.Core.NewsArticles.Services;
 
@@ -16,4 +17,5 @@ public interface INewsArticleService
     public Task<PagedResult<NewsArticle>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto);
     public Task<PagedResult<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto);
     public Task<PagedResult<NewsArticle>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto);
+    public Task<Guid> PatchPhotoAsync(Guid? articleId, IFormFile? logo);
 }

@@ -15,9 +15,9 @@ public class NewsArticle
     public DateTime? UpdatedAt { get; set; }
     public required string Title { get; set; }
     public required string Content { get; set; }
+    public string? PhotoPath { get; set; }
     [DefaultValue(0)]
     public int LikesCount { get; set; }
-    [JsonIgnore]
     public ICollection<NewsReference>? NewsReferences { get; set; }
     [JsonIgnore]
     public ICollection<NewsLike>? NewsLikes { get; set; }

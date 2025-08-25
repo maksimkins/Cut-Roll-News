@@ -11,6 +11,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80 
       POSTGRES_CONNECTION_STRING: "Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Database=${POSTGRES_DB};Pooling=true;"
+      BLOB_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=${AZURE_BLOB_DEFAULT_PROTOCOL};AccountName=${AZURE_BLOB_ACCOUNT_NAME};AccountKey=${AZURE_BLOB_ACCOUNT_KEY};EndpointSuffix=${AZURE_BLOB_ENDPOINT_SUFFIX}"
       JWT_KEY: "${JWT_KEY}"
       JWT_LIFE_TIME_IN_MINUTES: "${JWT_LIFE_TIME_IN_MINUTES}"
       JWT_ISSUER: "${JWT_ISSUER}"
@@ -18,14 +19,25 @@ services:
       RABBIT_MQ_HOSTNAME: "${RABBIT_MQ_HOSTNAME}"
       RABBIT_MQ_USERNAME: "${RABBIT_MQ_USERNAME}"
       RABBIT_MQ_PASSWORD: "${RABBIT_MQ_PASSWORD}"
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      BLOB_STORAGE_CONTAINER_NAME: "${BLOB_STORAGE_CONTAINER_NAME}"
+      BLOB_STORAGE_DIRECTORY: "${BLOB_STORAGE_DIRECTORY}"
 
-    ports:
-      - 5001:80
+    expose:
+      - "80" 
     depends_on:
       - postgres-news
     networks:
       - web
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.news.rule=Host(`cutnroll.it.com`) && PathPrefix(`/api/news`)"
+      - "traefik.http.routers.news.entrypoints=websecure"
+      - "traefik.http.routers.news.tls.certresolver=myresolver"
+      - "traefik.http.services.news.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.news-strip-prefix.stripprefix.prefixes=/api/news"
+      - "traefik.http.routers.news.middlewares=identity-strip-prefix"
 
   
   postgres-news:

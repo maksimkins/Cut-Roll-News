@@ -4,8 +4,6 @@ public class UserSearchDto
     public string? SearchTerm { get; set; }
     public bool? IsBanned { get; set; }
     public bool? IsMuted { get; set; }
-    public DateTime? RegisteredAfter { get; set; }
-    public DateTime? RegisteredBefore { get; set; }
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 }

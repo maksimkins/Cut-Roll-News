@@ -13,6 +13,11 @@ public static class InitSwaggerMethod
                 Title = "Cut-Roll-News Service",
                 Version = "v1",
             });
+            
+            options.AddServer(new OpenApiServer
+            {
+                Url = $"{"https://cutnroll.it.com"}/api/admindashboard"
+            });
 
             options.AddSecurityDefinition(
                 name: JwtBearerDefaults.AuthenticationScheme,

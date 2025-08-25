@@ -16,9 +16,10 @@ public class NewsArticleController : ControllerBase
         _newsArticleService = newsArticleService;
     }
 
+    [Consumes("multipart/form-data")]
     [HttpPost]
     [Authorize(Roles = "Publisher, Admin")]
-    public async Task<IActionResult> CreateNewsArticle([FromBody] NewsArticleCreateDto newsArticleCreateDto)
+    public async Task<IActionResult> CreateNewsArticle([FromForm] NewsArticleCreateDto newsArticleCreateDto)
     {
         try
         {

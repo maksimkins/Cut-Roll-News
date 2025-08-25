@@ -16,7 +16,7 @@ public static class InitSwaggerMethod
             
             options.AddServer(new OpenApiServer
             {
-                Url = $"{"https://cutnroll.it.com"}/api/admindashboard"
+                Url = $"{"https://cutnroll.it.com"}/api/news"
             });
 
             options.AddSecurityDefinition(

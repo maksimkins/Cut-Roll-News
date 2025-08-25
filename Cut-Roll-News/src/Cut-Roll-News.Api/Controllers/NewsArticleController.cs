@@ -1,6 +1,9 @@
+using System.Text.Json;
+using Cut_Roll_News.Api.Common.Dtos;
 using Cut_Roll_News.Api.Common.Extensions.Controllers;
 using Cut_Roll_News.Core.NewsArticles.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Services;
+using Cut_Roll_News.Core.NewsReferences.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +22,20 @@ public class NewsArticleController : ControllerBase
     [Consumes("multipart/form-data")]
     [HttpPost]
     [Authorize(Roles = "Publisher, Admin")]
-    public async Task<IActionResult> CreateNewsArticle([FromForm] NewsArticleCreateDto newsArticleCreateDto)
+    public async Task<IActionResult> CreateNewsArticle([FromForm] NewsArticleCreationEndpointDto newsArticleCreateDto)
     {
         try
         {
-            var newsId = await _newsArticleService.CreateArticleAsync(newsArticleCreateDto);
+            var references = JsonSerializer.Deserialize<List<NewsReferenceCreateDto>>(newsArticleCreateDto.ReferencesJson);
+
+            var newsId = await _newsArticleService.CreateArticleAsync(new NewsArticleCreateDto
+            {
+                Title = newsArticleCreateDto.Title,
+                Photo = newsArticleCreateDto.Photo,
+                References = references ?? throw new ArgumentNullException(nameof(references)),
+                AuthorId = newsArticleCreateDto.AuthorId,
+                Content = newsArticleCreateDto.Content
+            });
             return Ok(newsId);
         }
         catch (ArgumentException ex)

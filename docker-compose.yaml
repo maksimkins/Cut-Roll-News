@@ -39,7 +39,7 @@ services:
       - "traefik.http.routers.news.tls.certresolver=myresolver"
       - "traefik.http.services.news.loadbalancer.server.port=80"
       - "traefik.http.middlewares.news-strip-prefix.stripprefix.prefixes=/api/news"
-      - "traefik.http.routers.news.middlewares=identity-strip-prefix"
+      - "traefik.http.routers.news.middlewares=news-strip-prefix"
 
   
   postgres-news:

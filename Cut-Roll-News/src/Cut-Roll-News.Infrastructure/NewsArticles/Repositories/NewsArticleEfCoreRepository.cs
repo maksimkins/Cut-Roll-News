@@ -1,5 +1,7 @@
+using Cut_Roll_News.Core.NewsArticles.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsArticles.Repositories;
+using Cut_Roll_News.Core.Users.Dtos;
 using Cut_Roll_News.Infrastructure.Common.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -52,13 +54,33 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
             .AsQueryable());
     }
 
-    public async Task<NewsArticle?> GetAsNoTrackingAsync(Guid id)
+    public async Task<NewsArticleResponseDto?> GetAsNoTrackingAsync(Guid id)
     {
-        return await _dbContext.NewsArticles
-            .Include(n => n.Author)
-            .Include(n => n.NewsReferences)
-            .FirstOrDefaultAsync(na => na.Id == id);
-    }
+        var article = await _dbContext.NewsArticles.Include(n => n.Author)
+        .Where(na => na.Id == id)
+        .Select(na => new NewsArticleResponseDto
+        {
+            Id = na.Id,
+            AuthorId = na.Author!.Id,
+            Author = new UserSimplified
+            {
+                Id = na.AuthorId,
+                UserName = na.Author.UserName,
+                Email = na.Author.Email,
+                AvatarPath = na.Author.AvatarPath
+            },
+            CreatedAt = na.CreatedAt,
+            UpdatedAt = na.UpdatedAt,
+            Title = na.Title,
+            Content = na.Content,
+            PhotoPath = na.PhotoPath,
+            LikesCount = na.LikesCount,
+            NewsReferences = na.NewsReferences
+        })
+        .FirstOrDefaultAsync();
+
+        return article;
+        }
 
     public async Task<int> IncrementLikes(Guid articleId)
     {

@@ -10,12 +10,12 @@ public interface INewsArticleService
 {
     public Task<Guid> CreateArticleAsync(NewsArticleCreateDto? createDto);
     public Task<Guid> DeleteArticleByIdAsync(Guid? articleId);
-    public Task<NewsArticle?> GetArticleAsNoTrackingAsync(Guid? articleId);
+    public Task<NewsArticleResponseDto?> GetArticleAsNoTrackingAsync(Guid? articleId);
     public Task<Guid> UpdateAtricleContentAsync(Guid? articleId, NewsArticleUpdateContentDto? updateDto);
     public Task<Guid> DeleteArticleReferences(Guid? articleId, IEnumerable<NewsReferenceDeleteDto>? referencesToDelete);
     public Task<Guid> CreateArticleReferences(Guid? articleId, IEnumerable<NewsReferenceCreateDto>? referencesToCreate);
-    public Task<PagedResult<NewsArticle>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto);
-    public Task<PagedResult<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto);
-    public Task<PagedResult<NewsArticle>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto);
+    public Task<PagedResult<NewsArticleResponseDto>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto);
+    public Task<PagedResult<NewsArticleResponseDto>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto);
+    public Task<PagedResult<NewsArticleResponseDto>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto);
     public Task<Guid> PatchPhotoAsync(Guid? articleId, IFormFile? logo);
 }

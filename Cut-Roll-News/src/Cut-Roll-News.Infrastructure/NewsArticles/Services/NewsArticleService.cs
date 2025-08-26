@@ -13,6 +13,7 @@ using Cut_Roll_News.Core.NewsReferences.Models;
 using Cut_Roll_News.Core.NewsReferences.Repositories;
 using Cut_Roll_News.Core.People.Service;
 using Cut_Roll_News.Core.ProductionCompanies.Service;
+using Cut_Roll_News.Core.Users.Dtos;
 using Cut_Roll_News.Core.Users.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -171,7 +172,7 @@ public class NewsArticleService : INewsArticleService
         return articleId ?? throw new ArgumentNullException(nameof(articleId));
     }
 
-    public async Task<NewsArticle?> GetArticleAsNoTrackingAsync(Guid? articleId)
+    public async Task<NewsArticleResponseDto?> GetArticleAsNoTrackingAsync(Guid? articleId)
     {
         if (articleId == null || articleId == Guid.Empty)
             throw new ArgumentNullException(nameof(articleId));
@@ -179,7 +180,7 @@ public class NewsArticleService : INewsArticleService
         return await _articleRepository.GetAsNoTrackingAsync(articleId.Value);
     }
 
-    public async Task<PagedResult<NewsArticle>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto)
+    public async Task<PagedResult<NewsArticleResponseDto>> GetFilteredArticlesAsync(NewsArticleFilterDto? filterDto)
     {
         if (filterDto == null)
             throw new ArgumentNullException(nameof(filterDto));
@@ -223,9 +224,27 @@ public class NewsArticleService : INewsArticleService
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
 
-        return new PagedResult<NewsArticle>
+        return new PagedResult<NewsArticleResponseDto>
         {
-            Data = await query.AsNoTracking().ToListAsync(),
+            Data = await query.Include(n => n.Author).AsNoTracking().Select(na => new NewsArticleResponseDto
+        {
+            Id = na.Id,
+            AuthorId = na.Author!.Id,
+            Author = new UserSimplified
+            {
+                Id = na.AuthorId,
+                UserName = na.Author.UserName,
+                Email = na.Author.Email,
+                AvatarPath = na.Author.AvatarPath
+            },
+            CreatedAt = na.CreatedAt,
+            UpdatedAt = na.UpdatedAt,
+            Title = na.Title,
+            Content = na.Content,
+            PhotoPath = na.PhotoPath,
+            LikesCount = na.LikesCount,
+            NewsReferences = na.NewsReferences
+        }).ToListAsync(),
             TotalCount = totalCount,
             Page = page,
             PageSize = pageSize
@@ -233,7 +252,7 @@ public class NewsArticleService : INewsArticleService
 
     }
 
-    public async Task<PagedResult<NewsArticle>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto)
+    public async Task<PagedResult<NewsArticleResponseDto>> GetMostRecentArticlesAsync(NewsArticleRecentDto? recentDto)
     {
         if (recentDto == null)
             throw new ArgumentNullException(nameof(recentDto));
@@ -258,9 +277,27 @@ public class NewsArticleService : INewsArticleService
 
         
 
-        return new PagedResult<NewsArticle>
+        return new PagedResult<NewsArticleResponseDto>
         {
-            Data = await query.AsNoTracking().ToListAsync(),
+            Data = await query.Include(n => n.Author).AsNoTracking().Select(na => new NewsArticleResponseDto
+        {
+            Id = na.Id,
+            AuthorId = na.Author!.Id,
+            Author = new UserSimplified
+            {
+                Id = na.AuthorId,
+                UserName = na.Author.UserName,
+                Email = na.Author.Email,
+                AvatarPath = na.Author.AvatarPath
+            },
+            CreatedAt = na.CreatedAt,
+            UpdatedAt = na.UpdatedAt,
+            Title = na.Title,
+            Content = na.Content,
+            PhotoPath = na.PhotoPath,
+            LikesCount = na.LikesCount,
+            NewsReferences = na.NewsReferences
+        }).ToListAsync(),
             TotalCount = totalCount,
             Page = page,
             PageSize = pageSize
@@ -284,11 +321,17 @@ public class NewsArticleService : INewsArticleService
         foundArticle.Content = updateDto.NewContent ?? foundArticle.Content;
         foundArticle.Title = updateDto.NewTitle ?? foundArticle.Title;
 
-        return await _articleRepository.UpdateAsync(foundArticle)
+        return await _articleRepository.UpdateAsync(new NewsArticle
+        {   Id = foundArticle.Id,
+            AuthorId = foundArticle.AuthorId,
+            Content = foundArticle.Content,
+            Title = foundArticle.Title,
+
+        })
             ?? throw new InvalidOperationException($"Failed to update content for article with id: {newsId}");
     }
 
-    public async Task<PagedResult<NewsArticle>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto)
+    public async Task<PagedResult<NewsArticleResponseDto>> GetArticlesAsync(NewsArticlePaginationDto? paginationDto)
     {
         if (paginationDto == null)
             throw new ArgumentNullException(nameof(paginationDto));
@@ -304,9 +347,27 @@ public class NewsArticleService : INewsArticleService
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
 
-        var result = await query.AsNoTracking().ToListAsync();
+        var result = await query.Include(n => n.Author).AsNoTracking().Select(na => new NewsArticleResponseDto
+        {
+            Id = na.Id,
+            AuthorId = na.Author!.Id,
+            Author = new UserSimplified
+            {
+                Id = na.AuthorId,
+                UserName = na.Author.UserName,
+                Email = na.Author.Email,
+                AvatarPath = na.Author.AvatarPath
+            },
+            CreatedAt = na.CreatedAt,
+            UpdatedAt = na.UpdatedAt,
+            Title = na.Title,
+            Content = na.Content,
+            PhotoPath = na.PhotoPath,
+            LikesCount = na.LikesCount,
+            NewsReferences = na.NewsReferences
+        }).ToListAsync();
 
-        return new PagedResult<NewsArticle>
+        return new PagedResult<NewsArticleResponseDto>
         {
             Data = result,
             TotalCount = totalCount,

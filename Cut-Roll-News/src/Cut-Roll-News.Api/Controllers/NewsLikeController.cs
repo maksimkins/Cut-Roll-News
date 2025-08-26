@@ -16,6 +16,28 @@ public class NewsLikeController : ControllerBase
         _newsLikeService = newsLikeService;
     }
 
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> IsLiked(Guid newsId)
+    {
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var liked = await _newsLikeService.IsArticleLikedByUserAsync(userId, newsId);
+
+            return Ok(liked);
+        }
+        catch (ArgumentException ex)
+        {
+            return this.BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return this.InternalServerError(ex.Message);
+        }
+    }
+
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> ToggleLikeNews(Guid newsId)

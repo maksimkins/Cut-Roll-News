@@ -1,5 +1,6 @@
 namespace Cut_Roll_News.Infrastructure.NewsLikes.Repositories;
 
+using Cut_Roll_News.Core.Common.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsLikes.Models;
 using Cut_Roll_News.Core.NewsLikes.Repositories;
@@ -45,16 +46,25 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
         return await _dbContext.NewsLikes.AsNoTracking().Where(nl => nl.UserId == userId && nl.NewsArticleId == articleId).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string userId)
+    public async Task<PagedResult<NewsArticle>> GetLikedNewsByUserIdAsync(string userId, int page, int pageSize)
     {
-        var newsArticles = await _dbContext.NewsLikes
+        var query = _dbContext.NewsLikes
             .Where(nl => nl.UserId == userId)
             .Include(nl => nl.NewsArticle)
-            .Select(nl => nl.NewsArticle!)
-            .AsNoTracking()
-            .ToListAsync();
+            .Select(nl => nl.NewsArticle!); ;
 
-        return newsArticles;
+        var totalCount = await query.CountAsync();
+        query = query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+
+        return new PagedResult<NewsArticle>()
+        {
+            Data = await query.ToListAsync(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize =  pageSize,
+        };
     }
 
     public Task<int> GetLikesCountByArticleIdAsync(Guid articleId)

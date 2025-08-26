@@ -38,6 +38,7 @@ public class NewsLikeController : ControllerBase
         }
     }
 
+
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> ToggleLikeNews(Guid newsId)
@@ -64,12 +65,12 @@ public class NewsLikeController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetLikedNews()
+    public async Task<IActionResult> GetLikedNews(int page, int pageSize)
     {
         try
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            var likedNews = await _newsLikeService.GetLikedNewsByUserIdAsync(userId);
+            var likedNews = await _newsLikeService.GetLikedNewsByUserIdAsync(userId, page, pageSize);
             return Ok(likedNews);
         }
         catch (ArgumentException ex)

@@ -1,3 +1,4 @@
+using Cut_Roll_News.Core.Common.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsArticles.Services;
 using Cut_Roll_News.Core.NewsLikes.Models;
@@ -81,7 +82,7 @@ public class NewsLikeService : INewsLikeService
         return await _newsLikeRepository.GetByUserIdAndArticleId(userId, articleId.Value);
     }
 
-    public async Task<IEnumerable<NewsArticle>> GetLikedNewsByUserIdAsync(string? userId)
+    public async Task<PagedResult<NewsArticle>> GetLikedNewsByUserIdAsync(string? userId, int page, int pageSize)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));
@@ -91,7 +92,7 @@ public class NewsLikeService : INewsLikeService
             throw new ArgumentException($"there is no user with id: {userId}");
             
 
-        return await _newsLikeRepository.GetLikedNewsByUserIdAsync(userId);
+        return await _newsLikeRepository.GetLikedNewsByUserIdAsync(userId, page, pageSize);
     }
 
     public async Task<int> GetLikesCountByArticleIdAsync(Guid? articleId)

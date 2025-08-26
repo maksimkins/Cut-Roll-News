@@ -1,5 +1,6 @@
 namespace Cut_Roll_News.Api.Controllers;
 
+using System.Security.Claims;
 using Cut_Roll_News.Api.Common.Extensions.Controllers;
 using Cut_Roll_News.Core.NewsLikes.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,12 @@ public class UserLikesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetLikedNews(string userId)
+    public async Task<IActionResult> GetLikedNews(int page, int pageSize)
     {
         try
         {
-            var newsArticles = await _newsLikeService.GetLikedNewsByUserIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var newsArticles = await _newsLikeService.GetLikedNewsByUserIdAsync(userId, page, pageSize);
             return Ok(newsArticles);
         }
         catch (ArgumentException ex)

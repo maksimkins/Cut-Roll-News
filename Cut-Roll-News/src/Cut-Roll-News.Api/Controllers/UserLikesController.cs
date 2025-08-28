@@ -17,11 +17,10 @@ public class UserLikesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetLikedNews(int page, int pageSize)
+    public async Task<IActionResult> GetLikedNews(string userId, int page, int pageSize)
     {
         try
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var newsArticles = await _newsLikeService.GetLikedNewsByUserIdAsync(userId, page, pageSize);
             return Ok(newsArticles);
         }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text.Json;
 using Cut_Roll_News.Api.Common.Dtos;
 using Cut_Roll_News.Api.Common.Extensions.Controllers;
@@ -76,6 +77,12 @@ public class NewsArticleController : ControllerBase
     {
         try
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var news = await _newsArticleService.GetArticleAsNoTrackingAsync(newsId);
+            if (userRole == "Publisher" && news != null)
+                news = news.AuthorId == userId ? news : throw new ArgumentException("publisher doesnt posess news");
+                
             var updatedNewsId = await _newsArticleService.UpdateAtricleContentAsync(newsId, newsArticleUpdateDto);
             return Ok(updatedNewsId);
         }
@@ -95,6 +102,12 @@ public class NewsArticleController : ControllerBase
     {
         try
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var news = await _newsArticleService.GetArticleAsNoTrackingAsync(newsId);
+            if (userRole == "Publisher" && news != null)
+                news = news.AuthorId == userId ? news : throw new ArgumentException("publisher doesnt posess news");
+
             await _newsArticleService.DeleteArticleByIdAsync(newsId);
             return NoContent();
         }
@@ -105,6 +118,36 @@ public class NewsArticleController : ControllerBase
         catch (Exception ex)
         {
             return this.InternalServerError(ex.Message);
+        }
+    }
+
+    [HttpPatch("{newsId}/photo")]
+    [Authorize(Roles = "Publisher, Admin")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> PatchPhoto(Guid newsId, [FromForm] IFormFile? photo)
+    {
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var news = await _newsArticleService.GetArticleAsNoTrackingAsync(newsId);
+            if (userRole == "Publisher" && news != null)
+                news = news.AuthorId == userId ? news : throw new ArgumentException("publisher doesnt posess news");
+
+            var updatedArticleId = await _newsArticleService.PatchPhotoAsync(newsId, photo);
+            return Ok(updatedArticleId);
+        }
+        catch (ArgumentNullException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 

@@ -322,10 +322,13 @@ public class NewsArticleService : INewsArticleService
         foundArticle.Title = updateDto.NewTitle ?? foundArticle.Title;
 
         return await _articleRepository.UpdateAsync(new NewsArticle
-        {   Id = foundArticle.Id,
+        {
+            Id = foundArticle.Id,
             AuthorId = foundArticle.AuthorId,
             Content = foundArticle.Content,
             Title = foundArticle.Title,
+            PhotoPath = foundArticle.PhotoPath,
+            UpdatedAt = DateTime.UtcNow,
 
         })
             ?? throw new InvalidOperationException($"Failed to update content for article with id: {newsId}");

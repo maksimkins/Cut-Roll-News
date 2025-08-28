@@ -51,8 +51,8 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
         var query = _dbContext.NewsLikes
             .Where(nl => nl.UserId == userId)
             .Include(nl => nl.NewsArticle)
-            .Select(nl => nl.NewsArticle!); ;
-
+            .Select(nl => nl.NewsArticle!); 
+        
         var totalCount = await query.CountAsync();
         query = query
             .Skip((page - 1) * pageSize)

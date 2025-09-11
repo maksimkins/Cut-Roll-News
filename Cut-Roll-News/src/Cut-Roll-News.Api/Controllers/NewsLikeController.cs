@@ -48,8 +48,8 @@ public class NewsLikeController : ControllerBase
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var likeId = await _newsLikeService.IsArticleLikedByUserAsync(userId, newsId)
-                ? await _newsLikeService.CreateLikeAsync(userId, newsId)
-                : await _newsLikeService.DeleteLikeByUserIdAndArticleIdAsync(userId, newsId);
+                ? await _newsLikeService.DeleteLikeByUserIdAndArticleIdAsync(userId, newsId)
+                : await _newsLikeService.CreateLikeAsync(userId, newsId);
 
             return Ok(likeId);
         }

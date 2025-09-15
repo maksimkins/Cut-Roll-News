@@ -51,6 +51,7 @@ public class NewsArticleEfCoreRepository : INewsArticleRepository
         return await Task.FromResult(_dbContext.NewsArticles
             .Include(nl => nl.NewsReferences)
             .Include(nl => nl.NewsLikes)
+            .Include(nl => nl.Author)
             .AsQueryable());
     }
 

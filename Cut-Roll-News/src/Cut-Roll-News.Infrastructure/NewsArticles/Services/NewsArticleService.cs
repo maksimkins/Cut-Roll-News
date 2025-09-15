@@ -188,10 +188,12 @@ public class NewsArticleService : INewsArticleService
         var query = await _articleRepository.GetAllAsQueryableAsync();
         if (!string.IsNullOrWhiteSpace(filterDto.Query))
         {
-            string queryText = filterDto.Query.Trim().ToLower();
+            var term = $"%{filterDto.Query.Trim()}%";
             query = query.Where(a =>
-                a.Title.ToLower().Contains(queryText) ||
-                a.Content.ToLower().Contains(queryText));
+                EF.Functions.ILike(a.Title, term) ||
+                EF.Functions.ILike(a.Content, term) ||
+                EF.Functions.ILike(a.Author.UserName, term) ||
+                EF.Functions.ILike(a.Author.Email, term));
         }
         if (filterDto.From.HasValue)
             query = query.Where(a => a.CreatedAt >= filterDto.From.Value);
@@ -199,19 +201,24 @@ public class NewsArticleService : INewsArticleService
         if (filterDto.To.HasValue)
             query = query.Where(a => a.CreatedAt <= filterDto.To.Value);
 
-        if (filterDto.ReferenceToSearch is { Count: > 0 })
+        if (!string.IsNullOrWhiteSpace(filterDto.AuthorId))
         {
-            foreach (var refSearch in filterDto.ReferenceToSearch)
-            {
-                var localRef = refSearch;
-
-                query = query.Where(a =>
-                    a.NewsReferences != null &&
-                    a.NewsReferences.Any(r =>
-                        r.ReferenceType == localRef.ReferenceType &&
-                        r.ReferencedId == localRef.ReferencedId));
-            }
+            query = query.Where(a => a.AuthorId == filterDto.AuthorId);
         }
+
+        if (filterDto.ReferenceToSearch is { Count: > 0 })
+            {
+                foreach (var refSearch in filterDto.ReferenceToSearch)
+                {
+                    var localRef = refSearch;
+
+                    query = query.Where(a =>
+                        a.NewsReferences != null &&
+                        a.NewsReferences.Any(r =>
+                            r.ReferenceType == localRef.ReferenceType &&
+                            r.ReferencedId == localRef.ReferencedId));
+                }
+            }
 
         query = query.OrderByDescending(a => a.CreatedAt);
 

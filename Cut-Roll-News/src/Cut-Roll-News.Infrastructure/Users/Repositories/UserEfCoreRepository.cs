@@ -134,6 +134,7 @@ public class UserEfCoreRepository : IUserRepository
                 Email = u.Email,
                 IsBanned = u.IsBanned,
                 IsMuted = u.IsMuted,
+                AvatarPath = u.AvatarPath,
             })
             .ToListAsync();
 

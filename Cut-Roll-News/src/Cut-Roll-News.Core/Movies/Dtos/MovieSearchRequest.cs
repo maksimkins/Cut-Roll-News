@@ -16,6 +16,8 @@ public class MovieSearchRequest
     public string? Director { get; set; }
     public List<string>? Keywords { get; set; } = new List<string>();
     public int? Year { get; set; }
+    public int? MinYear { get; set; }
+    public int? MaxYear { get; set; }
     public float? MinRating { get; set; }
     public float? MaxRating { get; set; }
     public string? Country { get; set; }

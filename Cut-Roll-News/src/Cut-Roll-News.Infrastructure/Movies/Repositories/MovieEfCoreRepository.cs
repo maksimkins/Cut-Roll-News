@@ -116,6 +116,18 @@ public class MovieEfCoreRepository : IMovieRepository
         if (request.Year.HasValue)
             query = query.Where(m => m.ReleaseDate.HasValue && m.ReleaseDate.Value.Year == request.Year.Value);
 
+        if (request.MinYear.HasValue)
+        {
+            var minYear = request.MinYear.Value;
+            query = query.Where(m => m.ReleaseDate.HasValue && m.ReleaseDate.Value.Year >= minYear);
+        }
+
+        if (request.MaxYear.HasValue)
+        {
+            var maxYear = request.MaxYear.Value;
+            query = query.Where(m => m.ReleaseDate.HasValue && m.ReleaseDate.Value.Year <= maxYear);
+        }
+
         if (request.MinRating.HasValue)
             query = query.Where(m => m.VoteAverage >= request.MinRating.Value);
 

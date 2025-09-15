@@ -192,9 +192,10 @@ public class NewsArticleService : INewsArticleService
             query = query.Where(a =>
                 EF.Functions.ILike(a.Title, term) ||
                 EF.Functions.ILike(a.Content, term) ||
-                EF.Functions.ILike(a.Author.UserName, term) ||
-                EF.Functions.ILike(a.Author.Email, term));
+                (a.Author != null && EF.Functions.ILike(a.Author.UserName, term)) ||
+                (a.Author != null && EF.Functions.ILike(a.Author.Email, term)));
         }
+        
         if (filterDto.From.HasValue)
             query = query.Where(a => a.CreatedAt >= filterDto.From.Value);
 

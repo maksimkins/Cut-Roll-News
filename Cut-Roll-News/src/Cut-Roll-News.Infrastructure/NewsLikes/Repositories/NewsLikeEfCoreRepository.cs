@@ -59,7 +59,7 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
         query = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
-        var result = await query.Include(n => n.Author).AsNoTracking().Select(na => new NewsArticleResponseDto
+        var result = await query.Select(na => new NewsArticleResponseDto
         {
             Id = na.Id,
             AuthorId = na.Author!.Id,

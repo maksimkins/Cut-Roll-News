@@ -8,6 +8,7 @@ using Cut_Roll_News.Core.Common.Options;
 using Cut_Roll_News.Core.Common.BackgroundServices;
 using Cut_Roll_News.Core.Users.Repositories;
 using Cut_Roll_News.Core.Users.Dtos;
+using Cut_Roll_News.Core.Users.Services;
 
 public class UserRabbitMqService : BaseRabbitMqService, IHostedService
 {
@@ -33,7 +34,8 @@ public class UserRabbitMqService : BaseRabbitMqService, IHostedService
 
             using (var scope = base.serviceScopeFactory.CreateScope())
             {
-                var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+            {
+                var userRepository = scope.ServiceProvider.GetRequiredService<IUserService>();
 
                 var updateDto = JsonSerializer.Deserialize<UserUpdateDto>(message)!;
 
@@ -42,17 +44,18 @@ public class UserRabbitMqService : BaseRabbitMqService, IHostedService
                     throw new ArgumentException("User ID cannot be null for update operation.");
                 }
 
-                var userToUpdate = await userRepository.GetByIdAsync(updateDto.Id) ?? throw new ArgumentException($"there is no user with id: {updateDto.Id}");
+                var userToUpdate = await userRepository.GetUserByIdAsync(updateDto.Id) ?? throw new ArgumentException($"there is no user with id: {updateDto.Id}");
 
                 userToUpdate.Email = updateDto.Email is null ? userToUpdate.Email : updateDto.Email;
                 userToUpdate.Username = updateDto.UserName is null ? userToUpdate.Username : updateDto.UserName;
-                await userRepository.UpdateAsync(new UserUpdateDto
+                await userRepository.UpdateUserAsync(new UserUpdateDto
                 {
                     Id = userToUpdate.Id,
                     RoleId = updateDto.RoleId,
                     UserName = userToUpdate.Username,
                     Email = userToUpdate.Email
                 });
+            }
             }
         });
 

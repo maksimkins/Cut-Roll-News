@@ -39,7 +39,7 @@ public class UserRabbitMqService : BaseRabbitMqService, IHostedService
                 var userRepository = scope.ServiceProvider.GetRequiredService<IUserService>();
 
                 var updateDto = JsonSerializer.Deserialize<UserUpdateDto>(message)!;
-                Console.WriteLine($"\n\n\n\n\nReceived user update message\n{updateDto}\n\n\n\n");
+                Console.WriteLine($"\n\n\n\n\nReceived user update message\n{updateDto.UserName}\n\n\n\n");
 
                 if (updateDto.Id is null)
                     {

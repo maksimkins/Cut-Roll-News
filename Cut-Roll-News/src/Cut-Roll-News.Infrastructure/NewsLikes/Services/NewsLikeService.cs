@@ -1,4 +1,5 @@
 using Cut_Roll_News.Core.Common.Dtos;
+using Cut_Roll_News.Core.NewsArticles.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsArticles.Services;
 using Cut_Roll_News.Core.NewsLikes.Models;
@@ -82,7 +83,7 @@ public class NewsLikeService : INewsLikeService
         return await _newsLikeRepository.GetByUserIdAndArticleId(userId, articleId.Value);
     }
 
-    public async Task<PagedResult<NewsArticle>> GetLikedNewsByUserIdAsync(string? userId, int page, int pageSize)
+    public async Task<PagedResult<NewsArticleResponseDto>> GetLikedNewsByUserIdAsync(string? userId, int page, int pageSize)
     {
         if (string.IsNullOrEmpty(userId))
             throw new ArgumentNullException(nameof(userId));

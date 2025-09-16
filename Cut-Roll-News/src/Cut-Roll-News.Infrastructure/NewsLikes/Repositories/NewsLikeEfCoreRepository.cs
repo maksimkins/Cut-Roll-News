@@ -1,9 +1,11 @@
 namespace Cut_Roll_News.Infrastructure.NewsLikes.Repositories;
 
 using Cut_Roll_News.Core.Common.Dtos;
+using Cut_Roll_News.Core.NewsArticles.Dtos;
 using Cut_Roll_News.Core.NewsArticles.Models;
 using Cut_Roll_News.Core.NewsLikes.Models;
 using Cut_Roll_News.Core.NewsLikes.Repositories;
+using Cut_Roll_News.Core.Users.Dtos;
 using Cut_Roll_News.Infrastructure.Common.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,24 +48,43 @@ public class NewsLikeEfCoreRepository : INewsLikeRepository
         return await _dbContext.NewsLikes.AsNoTracking().Where(nl => nl.UserId == userId && nl.NewsArticleId == articleId).FirstOrDefaultAsync();
     }
 
-    public async Task<PagedResult<NewsArticle>> GetLikedNewsByUserIdAsync(string userId, int page, int pageSize)
+    public async Task<PagedResult<NewsArticleResponseDto>> GetLikedNewsByUserIdAsync(string userId, int page, int pageSize)
     {
         var query = _dbContext.NewsLikes
             .Where(nl => nl.UserId == userId)
-            .Include(nl => nl.NewsArticle)
+            .Include(nl => nl.NewsArticle).ThenInclude(na => na!.Author)
             .Select(nl => nl.NewsArticle!); 
         
         var totalCount = await query.CountAsync();
         query = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
-
-        return new PagedResult<NewsArticle>()
+        var result = await query.Include(n => n.Author).AsNoTracking().Select(na => new NewsArticleResponseDto
         {
-            Data = await query.ToListAsync(),
+            Id = na.Id,
+            AuthorId = na.Author!.Id,
+            Author = new UserSimplified
+            {
+                Id = na.AuthorId,
+                UserName = na.Author.UserName,
+                Email = na.Author.Email,
+                AvatarPath = na.Author.AvatarPath
+            },
+            CreatedAt = na.CreatedAt,
+            UpdatedAt = na.UpdatedAt,
+            Title = na.Title,
+            Content = na.Content,
+            PhotoPath = na.PhotoPath,
+            LikesCount = na.LikesCount,
+            NewsReferences = na.NewsReferences
+        }).ToListAsync();
+
+        return new PagedResult<NewsArticleResponseDto>
+        {
+            Data = result,
             TotalCount = totalCount,
             Page = page,
-            PageSize =  pageSize,
+            PageSize = pageSize
         };
     }
 

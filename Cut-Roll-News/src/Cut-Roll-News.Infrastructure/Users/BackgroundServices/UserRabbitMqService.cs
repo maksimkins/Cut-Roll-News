@@ -35,14 +35,16 @@ public class UserRabbitMqService : BaseRabbitMqService, IHostedService
             using (var scope = base.serviceScopeFactory.CreateScope())
             {
             {
+                Console.WriteLine($"\n\n\n\n\nReceived user update message\n{message}\n\n\n\n");
                 var userRepository = scope.ServiceProvider.GetRequiredService<IUserService>();
 
                 var updateDto = JsonSerializer.Deserialize<UserUpdateDto>(message)!;
+                Console.WriteLine($"\n\n\n\n\nReceived user update message\n{updateDto}\n\n\n\n");
 
                 if (updateDto.Id is null)
-                {
-                    throw new ArgumentException("User ID cannot be null for update operation.");
-                }
+                    {
+                        throw new ArgumentException("User ID cannot be null for update operation.");
+                    }
 
                 var userToUpdate = await userRepository.GetUserByIdAsync(updateDto.Id) ?? throw new ArgumentException($"there is no user with id: {updateDto.Id}");
 
